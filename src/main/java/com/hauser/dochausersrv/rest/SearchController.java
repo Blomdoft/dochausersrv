@@ -15,7 +15,7 @@ public class SearchController {
     @Autowired
     private PDFDocumentRepository pdfDocumentRepository;
 
-    @GetMapping("/search")
+    @GetMapping("/dochausersrv/search")
     public PDFDocument[] searchDocuments(@RequestBody SearchDocRequest request) {
         String queryString = String.join(" ", request.getQueryTerms());
         return pdfDocumentRepository.findDocumentsByText(
