@@ -11,6 +11,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,13 +31,33 @@ public class PDFDocumentRepository {
     @Value( "${archivedirectorycut}" )
     private String archiveDirectoryCutPoint;
 
-    public List<PDFDocument> findDocumentsByText(String queryString) {
+    public List<PDFDocument> findDocumentsByText(String[] queryStrings, int start) {
 
         ObjectMapper jsonMapper = new ObjectMapper();
         jsonMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchQuery("text", queryString));
+
+        // experiment, find partial words
+        StringBuffer sbuf = new StringBuffer();
+        Arrays.stream(queryStrings).forEach(str -> {
+            if (str.length() > 0) {
+                sbuf.append("*").append(str).append("* ");
+            }
+        }
+        );
+        String queryString = sbuf.toString();
+
+        System.out.println("QueryString: " + queryString);
+
+        if (queryString.trim().length() > 0) {
+            searchSourceBuilder.query(QueryBuilders.matchQuery("text", queryString));
+        } else {
+            searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        }
+
+        searchSourceBuilder.sort(new FieldSortBuilder("timestamp").order(SortOrder.DESC));
+        searchSourceBuilder.size(100);
 
         SearchRequest req = new SearchRequest()
                 .indices("dochauser")
