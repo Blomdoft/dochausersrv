@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  dochausersrv:
+    build: .
+    volumes:
+      - /home/scanner/dochauser_mount/archive:/home/scanner/archive
+
+    ports:
+      - "8080:8080"
