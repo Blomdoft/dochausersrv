@@ -11,7 +11,7 @@
 	<groupId>com.skritten.dochauser</groupId>
 	<artifactId>DocHauserSrv</artifactId>
 	<version>1.0.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>DocHauserSrv</name>
 	<description>Server for DocHauser</description>
 	<properties>
