@@ -1,7 +1,10 @@
-FROM openjdk:17-jdk-alpine
+FROM ubuntu:latest
 
 RUN groupadd -g 1001 scanner \
         && useradd -rm -d /home/scanner -s /bin/bash -g 1001 -u 1001 scanner
+
+RUN apt-get update \
+        && apt-get install -y openjdk-17-jre-headless
 
 WORKDIR /home/scanner
 
