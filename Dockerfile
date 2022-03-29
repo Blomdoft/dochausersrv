@@ -17,4 +17,3 @@ EXPOSE 8080
 COPY target/DocHauserSrv-1.0.0.jar DocHauserSrv-1.0.0.jar
 USER scanner:scanner
 ENTRYPOINT ["java", "-jar", "/DocHauserSrv-1.0.0.jar"]
-

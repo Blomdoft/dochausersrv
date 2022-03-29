@@ -1,7 +1,7 @@
 package com.hauser.dochausersrv.rest;
 
-import com.hauser.dochausersrv.model.PDFDocument;
 import com.hauser.dochausersrv.model.SearchDocRequest;
+import com.hauser.dochausersrv.model.SearchDocResult;
 import com.hauser.dochausersrv.repository.PDFDocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +16,10 @@ public class SearchController {
     private PDFDocumentRepository pdfDocumentRepository;
 
     @PostMapping("/dochausersrv/search")
-    public PDFDocument[] searchDocuments(@RequestBody SearchDocRequest request) {
+    public SearchDocResult searchDocuments(@RequestBody SearchDocRequest request) {
         System.out.println("New Reqiest:" + request);
         return pdfDocumentRepository.findDocumentsByText(
-                request.getQueryTerms(), 0
-                ).toArray(new PDFDocument[0]);
-
+                request.getQueryTerms(), request.getSkip()
+                );
     }
 }

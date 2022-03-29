@@ -41,7 +41,7 @@ class DocHauserSrvApplicationTests {
 	void testBasicSearch() throws Exception {
 
 		String[] searchTerms = {"XXXLutz"};
-		SearchDocRequest req = new SearchDocRequest(SearchAggregation.AND, SearchMode.EXACT, null, null, searchTerms);
+		SearchDocRequest req = new SearchDocRequest(SearchAggregation.AND, 0, SearchMode.EXACT, null, null, searchTerms);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
 				"/search")

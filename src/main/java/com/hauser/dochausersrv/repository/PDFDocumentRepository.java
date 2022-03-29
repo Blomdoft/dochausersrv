@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hauser.dochausersrv.model.PDFDocument;
+import com.hauser.dochausersrv.model.SearchDocResult;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -31,7 +32,7 @@ public class PDFDocumentRepository {
     @Value( "${archivedirectorycut}" )
     private String archiveDirectoryCutPoint;
 
-    public List<PDFDocument> findDocumentsByText(String[] queryStrings, int start) {
+    public SearchDocResult findDocumentsByText(String[] queryStrings, long start) {
 
         ObjectMapper jsonMapper = new ObjectMapper();
         jsonMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
@@ -42,7 +43,7 @@ public class PDFDocumentRepository {
         StringBuffer sbuf = new StringBuffer();
         Arrays.stream(queryStrings).forEach(str -> {
             if (str.length() > 0) {
-                sbuf.append("*").append(str).append("* ");
+                sbuf.append(str).append("* ");
             }
         }
         );
@@ -58,6 +59,7 @@ public class PDFDocumentRepository {
 
         searchSourceBuilder.sort(new FieldSortBuilder("timestamp").order(SortOrder.DESC));
         searchSourceBuilder.size(100);
+        searchSourceBuilder.from((int)start);
 
         SearchRequest req = new SearchRequest()
                 .indices("dochauser")
@@ -84,12 +86,13 @@ public class PDFDocumentRepository {
                 });
             });
 
-            return results;
+            return new SearchDocResult(results, response.getHits().getTotalHits().value);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return Collections.emptyList();
+
+        return new SearchDocResult(Collections.emptyList(), 0);
 
     }
 
