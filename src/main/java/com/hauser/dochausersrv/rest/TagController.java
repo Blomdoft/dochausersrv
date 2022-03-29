@@ -45,14 +45,14 @@ public class TagController {
 
     // PDF document Tags, adding and removing tags from documents
 
-    @PutMapping("/dochausersrv/tag/{documentId}/{tagName}")
-    public PDFDocument addTagToDocument(@PathVariable(value = "docuemntId") String documentId, @PathVariable(value = "tagName") String tagName) {
+    @PutMapping("/dochausersrv/document/{documentId}/{tagName}")
+    public PDFDocument addTagToDocument(@PathVariable(value = "documentId") String documentId, @PathVariable(value = "tagName") String tagName) {
         LOG.info("Request to add tag " + tagName + " to document " + documentId);
         return pdfDocumentRepository.addTag(documentId, tagName);
     }
 
     @DeleteMapping("/dochausersrv/document/{documentId}/{tagName}")
-    public PDFDocument deleteTagFromDocument(@PathVariable(value = "docuemntId") String documentId, @PathVariable(value = "tagName") String tagName) {
+    public PDFDocument deleteTagFromDocument(@PathVariable(value = "documentId") String documentId, @PathVariable(value = "tagName") String tagName) {
         LOG.info("Request to remove tag " + tagName + " from document " + documentId);
         return pdfDocumentRepository.deleteTag(documentId, tagName);
     }

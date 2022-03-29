@@ -137,6 +137,7 @@ public class PDFDocumentRepository {
                 // store as updated document
                 UpdateRequest updateRequest = new UpdateRequest("dochauser", documentId);
                 updateRequest.doc(result);
+                updateRequest.fetchSource(true);
                 UpdateResponse updateResponse = highLevelClient.update(updateRequest, RequestOptions.DEFAULT);
 
                 if (updateResponse.getResult() != DocWriteResponse.Result.UPDATED) {
@@ -176,6 +177,7 @@ public class PDFDocumentRepository {
                 // store as updated document
                 UpdateRequest updateRequest = new UpdateRequest("dochauser", documentId);
                 updateRequest.doc(result);
+                updateRequest.fetchSource(true);
                 UpdateResponse updateResponse = highLevelClient.update(updateRequest, RequestOptions.DEFAULT);
 
                 if (updateResponse.getResult() != DocWriteResponse.Result.UPDATED) {

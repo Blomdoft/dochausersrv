@@ -43,7 +43,7 @@ class DocHauserSrvApplicationTests {
 		String[] searchTerms = {"XXXLutz"};
 		SearchDocRequest req = new SearchDocRequest(SearchAggregation.AND, 0, SearchMode.EXACT, null, null, searchTerms);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(
 				"/dochausersrv/search")
 				.content(asJsonString(req))
 				.contentType(MediaType.APPLICATION_JSON)
@@ -51,6 +51,29 @@ class DocHauserSrvApplicationTests {
 
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
+	}
+
+
+	@Test
+	public void testAddTagToDocument() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put(
+						"/dochausersrv/document/446f1f0-a446-11ec-befa-0242ac140002/somebunny2")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		System.out.println(result.getResponse().getContentAsString());
+
+	}
+
+	@Test
+	public void testRemoveTagFromDocument() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete(
+						"/dochausersrv/document/446f1f0-a446-11ec-befa-0242ac140002/somebunny2")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		System.out.println(result.getResponse().getContentAsString());
+
 	}
 
 	@Test
