@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hauser.dochausersrv.model.SearchAggregation;
 import com.hauser.dochausersrv.model.SearchMode;
 import com.hauser.dochausersrv.model.SearchDocRequest;
+import com.hauser.dochausersrv.model.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Arrays;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -108,5 +111,22 @@ class DocHauserSrvApplicationTests {
 		System.out.println(result.getResponse().getContentAsString());
 
 	}
+
+	@Test
+	public void testSetTags() throws Exception {
+
+		String[] arr = { "Test", "Another", "AThird" };
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put(
+						"/dochauser/tag")
+				.content(asJsonString(Arrays.stream(arr).map(Tag::new).toArray(Tag[]::new)))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		System.out.println(result.getResponse().getContentAsString());
+
+	}
+
 
 }

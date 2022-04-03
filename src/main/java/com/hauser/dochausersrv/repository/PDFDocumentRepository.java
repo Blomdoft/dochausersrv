@@ -197,4 +197,13 @@ public class PDFDocumentRepository {
             throw new RuntimeException("Unable to communicate with Elastic Search", e);
         }
     }
+
+    /**
+     * Remove a given tag from all documents in the repository
+     * @param tagName Name of the tag to remove
+     */
+    public void removeTagFromAllDocuments(String tagName) {
+
+    }
+
 }

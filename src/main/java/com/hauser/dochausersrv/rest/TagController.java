@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -55,6 +56,12 @@ public class TagController {
     public PDFDocument deleteTagFromDocument(@PathVariable(value = "documentId") String documentId, @PathVariable(value = "tagName") String tagName) {
         LOG.info("Request to remove tag " + tagName + " from document " + documentId);
         return pdfDocumentRepository.deleteTag(documentId, tagName);
+    }
+
+    @PutMapping("/dochausersrv/taq")
+    public void setTags(@RequestBody Tag[] newTags) {
+        LOG.info("Request to replace tags with new list " + Arrays.toString(newTags));
+        tagRepository.setTags(Arrays.stream(newTags).map(Tag::getTagname).toArray(String[]::new));
     }
 
 }

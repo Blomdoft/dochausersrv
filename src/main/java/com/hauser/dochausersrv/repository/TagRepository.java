@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +97,30 @@ public class TagRepository {
             return tags.stream().map(m -> m.get("tagname")).map(Tag::new).toList();
         } catch (IOException e) {
             LOG.error("Unable to communicate proprly with Elastic Search", e);
+            throw new RuntimeException("Unable to communicate with Elastic Search" , e);
+        }
+    }
+
+    public void setTags(String[] newtags) {
+        initRepositoryIfNotPresent();
+        try {
+            GetRequest getRequest = new GetRequest(tagIndex, tagDocumentId);
+            GetResponse getReponse = highLevelClient.get(getRequest, RequestOptions.DEFAULT);
+            Map<String, Object> result = getReponse.getSourceAsMap();
+            List<Map<String, String>> tags = Arrays.stream(newtags).map(tag -> Map.of("tagname", tag)).toList();
+            result.put("tags", tags);
+            // store as updated document
+            UpdateRequest updateRequest = new UpdateRequest(tagIndex, tagDocumentId);
+            updateRequest.doc(result);
+            UpdateResponse updateResponse = highLevelClient.update(updateRequest, RequestOptions.DEFAULT);
+
+            if (updateResponse.getResult() != DocWriteResponse.Result.UPDATED) {
+                LOG.error("Unable to update the tag document on adding of tags " + newtags);
+                throw new RuntimeException("Update failed");
+            }
+            LOG.info("Replaced a list of tags to the tag repository: " + newtags);
+
+        } catch (IOException e) {
             throw new RuntimeException("Unable to communicate with Elastic Search" , e);
         }
     }

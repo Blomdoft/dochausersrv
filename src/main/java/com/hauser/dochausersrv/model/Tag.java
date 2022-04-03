@@ -10,6 +10,9 @@ public class Tag {
     }
     public Tag() {}
 
+    public Tag(Tag tag) {
+    }
+
     public String getTagname() {
         return tagname;
     }
