@@ -58,7 +58,7 @@ public class TagController {
         return pdfDocumentRepository.deleteTag(documentId, tagName);
     }
 
-    @PutMapping("/dochausersrv/taq")
+    @PutMapping("/dochausersrv/tag")
     public void setTags(@RequestBody Tag[] newTags) {
         LOG.info("Request to replace tags with new list " + Arrays.toString(newTags));
         tagRepository.setTags(Arrays.stream(newTags).map(Tag::getTagname).toArray(String[]::new));
