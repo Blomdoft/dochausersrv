@@ -11,13 +11,20 @@ public class SearchDocRequest {
     private final String to;
     private final String[] queryTerms;
 
-    public SearchDocRequest(SearchAggregation aggregation, long skip, SearchMode mode, String from, String to, String[] queryTerms) {
+    private final Tag[] queryTags;
+
+    public SearchDocRequest(SearchAggregation aggregation, long skip, SearchMode mode, String from, String to, String[] queryTerms, Tag[] queryTags) {
         this.aggregation = aggregation;
         this.skip = skip;
         this.mode = mode;
         this.from = from;
         this.to = to;
         this.queryTerms = queryTerms;
+        this.queryTags = queryTags;
+    }
+
+    public Tag[] getQueryTags() {
+        return queryTags;
     }
 
     public SearchAggregation getAggregation() {
@@ -49,13 +56,14 @@ public class SearchDocRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SearchDocRequest that = (SearchDocRequest) o;
-        return skip == that.skip && aggregation == that.aggregation && mode == that.mode && Objects.equals(from, that.from) && Objects.equals(to, that.to) && Arrays.equals(queryTerms, that.queryTerms);
+        return skip == that.skip && aggregation == that.aggregation && mode == that.mode && Objects.equals(from, that.from) && Objects.equals(to, that.to) && Arrays.equals(queryTerms, that.queryTerms) && Arrays.equals(queryTags, that.queryTags);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(aggregation, skip, mode, from, to);
         result = 31 * result + Arrays.hashCode(queryTerms);
+        result = 31 * result + Arrays.hashCode(queryTags);
         return result;
     }
 
@@ -68,6 +76,8 @@ public class SearchDocRequest {
                 ", from='" + from + '\'' +
                 ", to='" + to + '\'' +
                 ", queryTerms=" + Arrays.toString(queryTerms) +
+                ", queryTags=" + Arrays.toString(queryTags) +
                 '}';
     }
+
 }

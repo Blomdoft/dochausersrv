@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hauser.dochausersrv.model.PDFDocument;
 import com.hauser.dochausersrv.model.SearchDocResult;
+import org.apache.lucene.search.TermQuery;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
@@ -14,6 +15,9 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -55,7 +59,7 @@ public class PDFDocumentRepository {
      * @param start Paging capability, how many entries will be skipped
      * @return Total number of hits and all the documents found
      */
-    public SearchDocResult findDocumentsByText(String[] queryStrings, long start) {
+    public SearchDocResult findDocumentsByText(String[] queryStrings, String [] tags, long start) {
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
@@ -71,11 +75,18 @@ public class PDFDocumentRepository {
 
         System.out.println("QueryString: " + queryString);
 
+        QueryBuilder textSearchQueryBuilder = null;
         if (queryString.trim().length() > 0) {
-            searchSourceBuilder.query(QueryBuilders.matchQuery("text", queryString));
+            textSearchQueryBuilder = QueryBuilders.matchQuery("text", queryString);
         } else {
-            searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+            textSearchQueryBuilder = QueryBuilders.matchAllQuery();
         }
+
+        BoolQueryBuilder bqb = QueryBuilders.boolQuery().must(textSearchQueryBuilder);
+        for (String tag : tags) {
+            bqb = bqb.must(QueryBuilders.termQuery("tags.tagname", tag.toLowerCase()));
+        }
+        searchSourceBuilder.query(bqb);
 
         searchSourceBuilder.sort(new FieldSortBuilder("timestamp").order(SortOrder.DESC));
         searchSourceBuilder.size(100);
@@ -84,6 +95,7 @@ public class PDFDocumentRepository {
         SearchRequest req = new SearchRequest()
                 .indices(index)
                 .source(searchSourceBuilder);
+        System.out.println(req.toString());
         try {
             SearchResponse response = highLevelClient.search(req, RequestOptions.DEFAULT);
             SearchHit[] hits = response.getHits().getHits();
