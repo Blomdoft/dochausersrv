@@ -84,7 +84,7 @@ public class PDFDocumentRepository {
 
         BoolQueryBuilder bqb = QueryBuilders.boolQuery().must(textSearchQueryBuilder);
         for (String tag : tags) {
-            bqb = bqb.must(QueryBuilders.termQuery("tags.tagname", tag.toLowerCase()));
+            bqb = bqb.must(QueryBuilders.termQuery("tags.tagname", tag));
         }
         searchSourceBuilder.query(bqb);
 
@@ -139,6 +139,12 @@ public class PDFDocumentRepository {
             GetRequest getRequest = new GetRequest(index, documentId);
             GetResponse getResponse = highLevelClient.get(getRequest, RequestOptions.DEFAULT);
             Map<String, Object> result = getResponse.getSourceAsMap();
+
+            if (result == null) {
+                LOG.error("Unable to retrieve document for id " + documentId);
+                return null;
+            }
+
             List<Map<String, String>> tags = (List<Map<String, String>>) result.get("tags");
 
             if (!tags.stream().map(m -> m.get("tagname")).toList().contains(tagName)) {
