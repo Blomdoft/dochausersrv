@@ -8,10 +8,13 @@ public class PDFDocument {
     private String name;
     private String directory;
     private String text;
-    private String timestamp;
-    private String origin;
+    private String deleted;
+    private String workflow;
+    private String assigned;
     private List<Thumbnail> thumbnails;
     private List<Tag> tags;
+    private String timestamp;
+    private String origin;
 
     public PDFDocument() {
     }
@@ -27,6 +30,45 @@ public class PDFDocument {
         this.tags = tags;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PDFDocument that = (PDFDocument) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(directory, that.directory) && Objects.equals(text, that.text) && Objects.equals(timestamp, that.timestamp) && Objects.equals(origin, that.origin) && Objects.equals(deleted, that.deleted) && Objects.equals(workflow, that.workflow) && Objects.equals(assigned, that.assigned) && Objects.equals(thumbnails, that.thumbnails) && Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, directory, text, timestamp, origin, deleted, workflow, assigned, thumbnails, tags);
+    }
+
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getWorkflow() {
+        return workflow;
+    }
+
+    public void setWorkflow(String workflow) {
+        this.workflow = workflow;
+    }
+
+    public String getAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(String assigned) {
+        this.assigned = assigned;
+    }
+
     @Override
     public String toString() {
         return "PDFDocument{" +
@@ -34,24 +76,14 @@ public class PDFDocument {
                 ", name='" + name + '\'' +
                 ", directory='" + directory + '\'' +
                 ", text='" + text + '\'' +
-                ", timestamp='" + timestamp + '\'' +
-                ", origin='" + origin + '\'' +
+                ", deleted='" + deleted + '\'' +
+                ", workflow='" + workflow + '\'' +
+                ", assigned='" + assigned + '\'' +
                 ", thumbnails=" + thumbnails +
                 ", tags=" + tags +
+                ", timestamp='" + timestamp + '\'' +
+                ", origin='" + origin + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PDFDocument that = (PDFDocument) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(directory, that.directory) && Objects.equals(text, that.text) && Objects.equals(timestamp, that.timestamp) && Objects.equals(origin, that.origin) && Objects.equals(thumbnails, that.thumbnails) && Objects.equals(tags, that.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, directory, text, timestamp, origin, thumbnails, tags);
     }
 
     public String getId() {

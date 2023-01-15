@@ -75,7 +75,7 @@ public class PDFDocumentRepository {
 
         System.out.println("QueryString: " + queryString);
 
-        QueryBuilder textSearchQueryBuilder = null;
+        QueryBuilder textSearchQueryBuilder;
         if (queryString.trim().length() > 0) {
             textSearchQueryBuilder = QueryBuilders.matchQuery("text", queryString);
         } else {
@@ -86,6 +86,9 @@ public class PDFDocumentRepository {
         for (String tag : tags) {
             bqb = bqb.must(QueryBuilders.termQuery("tags.tagname", tag));
         }
+        // filter out deleted
+        bqb.mustNot(QueryBuilders.termQuery("deleted", "true"));
+
         searchSourceBuilder.query(bqb);
 
         searchSourceBuilder.sort(new FieldSortBuilder("timestamp").order(SortOrder.DESC));
@@ -209,6 +212,38 @@ public class PDFDocumentRepository {
                 }
             } else {
                 return null;
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to communicate with Elastic Search", e);
+        }
+    }
+
+    /**
+     * Delete a document, logically, by adding a deleted key set to true
+     * @param documentId PDF Document ID
+     * @return the updated document if one was updated
+     */
+    public PDFDocument deleteDocument(String documentId) {
+        try {
+            GetRequest getRequest = new GetRequest(index, documentId);
+            GetResponse getReponse = highLevelClient.get(getRequest, RequestOptions.DEFAULT);
+            Map<String, Object> result = getReponse.getSourceAsMap();
+            result.put("deleted", "true");
+            // store as updated document
+            UpdateRequest updateRequest = new UpdateRequest("dochauser", documentId);
+            updateRequest.doc(result);
+            updateRequest.fetchSource(true);
+            UpdateResponse updateResponse = highLevelClient.update(updateRequest, RequestOptions.DEFAULT);
+
+            if (updateResponse.getResult() != DocWriteResponse.Result.UPDATED) {
+                throw new RuntimeException("Delete failed");
+            }
+
+            try {
+                return jsonMapper.readValue(updateResponse.getGetResult().sourceAsString(), PDFDocument.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Unable to analyse result from Elastic Search", e);
             }
 
         } catch (IOException e) {
