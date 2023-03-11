@@ -14,6 +14,7 @@ VOLUME /home/scanner/scanner
 
 EXPOSE 8080
 
-COPY target/DocHauserSrv-1.0.0.jar DocHauserSrv-1.0.0.jar
+
 USER scanner:scanner
-ENTRYPOINT ["java", "-jar", "/DocHauserSrv-1.0.0.jar"]
+COPY target/DocHauserSrv-1.0.0.jar DocHauserSrv-1.0.0.jar
+ENTRYPOINT ["java", "-jar", "/home/scanner/DocHauserSrv-1.0.0.jar"]

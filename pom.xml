@@ -71,8 +71,7 @@
 									<version>1.0.0</version>
 									<type>jar</type>
 									<overWrite>false</overWrite>
-									<!-- <outputDirectory>${project.basedir}/src/main/resources/static</outputDirectory> -->
-									<outputDirectory>${project.build.directory}/classes/static</outputDirectory>
+									<outputDirectory>${project.basedir}/src/main/resources/static</outputDirectory> 
 								</artifactItem>
 							</artifactItems>
 						</configuration>
