@@ -75,7 +75,7 @@
 									<artifactId>dochausergui</artifactId>
 									<version>1.0.0</version>
 									<type>jar</type>
-									<overWrite>false</overWrite>
+									<overWrite>true</overWrite>
 									<outputDirectory>${project.basedir}/src/main/resources/static</outputDirectory> 
 								</artifactItem>
 							</artifactItems>

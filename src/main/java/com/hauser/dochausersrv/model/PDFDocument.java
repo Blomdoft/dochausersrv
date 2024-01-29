@@ -16,10 +16,12 @@ public class PDFDocument {
     private String timestamp;
     private String origin;
 
+    private Analysis analysis;
+
     public PDFDocument() {
     }
 
-    public PDFDocument(String id, String name, String directory, String text, String timestamp, String origin, List<Thumbnail> thumbnails, List<Tag> tags) {
+    public PDFDocument(String id, String name, String directory, String text, String timestamp, String origin, List<Thumbnail> thumbnails, List<Tag> tags, Analysis analysis) {
         this.id = id;
         this.name = name;
         this.directory = directory;
@@ -28,6 +30,7 @@ public class PDFDocument {
         this.origin = origin;
         this.thumbnails = thumbnails;
         this.tags = tags;
+        this.analysis = analysis;
     }
 
 
@@ -148,6 +151,14 @@ public class PDFDocument {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Analysis getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis = analysis;
     }
 }
 
