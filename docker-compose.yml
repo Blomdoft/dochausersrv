@@ -4,6 +4,7 @@ services:
     build: .
     volumes:
       - /home/scanner/dochauser_mount/archive:/home/scanner/archive
+      - /home/scanner/dochauser_mount/import:/home/scanner/import
     restart: always
     ports:
       - "8080:8080"

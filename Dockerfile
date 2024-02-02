@@ -11,6 +11,7 @@ WORKDIR /home/scanner
 # Volumes for mounts
 VOLUME /home/scanner/archive
 VOLUME /home/scanner/scanner
+VOLUME /home/scanner/import
 
 EXPOSE 8080
 
